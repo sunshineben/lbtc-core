@@ -54,17 +54,17 @@ struct ChainTxData;
 struct PrecomputedTransactionData;
 struct LockPoints;
 
-static const CAmount OP_REGISTER_FORGER_FEE = 1 * COIN;
-static const CAmount OP_VOTE_FORGER_FEE = 0.01 * COIN;
-static const CAmount OP_CANCEL_VOTE_FORGER_FEE = 0.01 * COIN;
-static const CAmount OP_REGISTER_COMMITTEE_FEE = 1 * COIN;
-static const CAmount OP_REGISTER_NAME_FEE = 1 * COIN;
-static const CAmount OP_VOTE_COMMITTEE_FEE = 0.01 * COIN;
-static const CAmount OP_SUBMIT_BILL_FEE = 3 * COIN;
-static const CAmount OP_VOTE_BILL_FEE = 0.01 * COIN;
-static const CAmount OP_CREATE_TOKEN_FEE = 5 * COIN;
-static const CAmount OP_SEND_TOKEN_FEE = 0.001 * COIN;
-static const CAmount OP_LOCK_TOKEN_FEE = 0.001 * COIN;
+static const CAmount OP_REGISTER_FORGER_FEE = 0 * COIN;
+static const CAmount OP_VOTE_FORGER_FEE = 0.0 * COIN;
+static const CAmount OP_CANCEL_VOTE_FORGER_FEE = 0.0 * COIN;
+static const CAmount OP_REGISTER_COMMITTEE_FEE = 0 * COIN;
+static const CAmount OP_REGISTER_NAME_FEE = 0 * COIN;
+static const CAmount OP_VOTE_COMMITTEE_FEE = 0.0 * COIN;
+static const CAmount OP_SUBMIT_BILL_FEE = 0 * COIN;
+static const CAmount OP_VOTE_BILL_FEE = 0.0 * COIN;
+static const CAmount OP_CREATE_TOKEN_FEE = 0 * COIN;
+static const CAmount OP_SEND_TOKEN_FEE = 0.00 * COIN;
+static const CAmount OP_LOCK_TOKEN_FEE = 0.00 * COIN;
 
 /** Default for DEFAULT_WHITELISTRELAY. */
 static const bool DEFAULT_WHITELISTRELAY = true;

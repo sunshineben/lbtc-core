@@ -783,6 +783,7 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
         // This mitigates 'penny-flooding' -- sending thousands of free transactions just to
         // be annoying or make others' transactions take longer to confirm.
         if (fLimitFree && nModifiedFees < ::minRelayTxFee.GetFee(nSize))
+        //if ((fLimitFree) && nModifiedFees < ::minRelayTxFee.GetFee(nSize))
         {
             static CCriticalSection csFreeLimiter;
             static double dFreeCount;
@@ -1190,7 +1191,8 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 {
     int halvings = 0;
     if(nHeight == 1) {
-        return 359092600000000;
+        //return 359092600000000;
+        return 100000000000000000;
     }
     CAmount nSubsidy = 0.0625 * COIN;
     if(nHeight > 20000000) {
@@ -4743,42 +4745,42 @@ bool DoVoting(const CBlock& block, uint32_t nHeight, std::map<uint256, uint64_t>
             const CKeyID& address = t->address;
             switch (script[0]) {
                 case OP_REGISTE:
-                    if(mapTxFee[t->GetHash()] >= 100000000)
+                    //if(mapTxFee[t->GetHash()] >= 100000000)
                         ProcessRegiste(nHeight, (*t).GetHash(), address, script, fUndo);
                 break;
                  
                 case OP_VOTE:
-                    if(mapTxFee[t->GetHash()] >= 1000000)
+                    //if(mapTxFee[t->GetHash()] >= 1000000)
                         ProcessVote(nHeight, (*t).GetHash(), address, script, fUndo);
                 break;
                     
                 case OP_REVOKE:
-                    if(mapTxFee[t->GetHash()] >= 1000000)
+                    //if(mapTxFee[t->GetHash()] >= 1000000)
                         ProcessCancelVote(nHeight, (*t).GetHash(), address, script, fUndo);
                 break;
 
                 case OP_REGISTE_COMMITTEE:
-                    if(mapTxFee[t->GetHash()] >= OP_REGISTER_COMMITTEE_FEE)
+                    //if(mapTxFee[t->GetHash()] >= OP_REGISTER_COMMITTEE_FEE)
                         ProcessRegisterCommittee(nHeight, (*t).GetHash(), address, script, fUndo);
                 break;
 
                 case OP_VOTE_COMMITTEE:
-                    if(mapTxFee[t->GetHash()] >= OP_VOTE_COMMITTEE_FEE)
+                    //if(mapTxFee[t->GetHash()] >= OP_VOTE_COMMITTEE_FEE)
                         ProcessVoteCommittee(nHeight, (*t).GetHash(), address, script, true, fUndo);
                 break;
 
                 case OP_REVOKE_COMMITTEE:
-                    if(mapTxFee[t->GetHash()] >= OP_VOTE_COMMITTEE_FEE)
+                    //if(mapTxFee[t->GetHash()] >= OP_VOTE_COMMITTEE_FEE)
                         ProcessVoteCommittee(nHeight, (*t).GetHash(), address, script, false, fUndo);
                 break;
 
                 case OP_SUBMIT_BILL:
-                    if(mapTxFee[t->GetHash()] >= OP_SUBMIT_BILL_FEE)
+                    //if(mapTxFee[t->GetHash()] >= OP_SUBMIT_BILL_FEE)
                         ProcessSubmitBill(nHeight, (*t).GetHash(), address, block.nTime, script, fUndo);
                 break;
 
                 case OP_VOTE_BILL:
-                    if(mapTxFee[t->GetHash()] >= OP_VOTE_BILL_FEE)
+                    //if(mapTxFee[t->GetHash()] >= OP_VOTE_BILL_FEE)
                         ProcessVoteBill(nHeight, (*t).GetHash(), address, script, fUndo);
                 break;
 

@@ -67,7 +67,8 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
  * + Contains no strange transactions
  */
 
-int COINBASE_MATURITY = 5000;
+//int COINBASE_MATURITY = 5000;
+int COINBASE_MATURITY = 10;
 class CMainParams : public CChainParams {
 public:
     CMainParams() {
@@ -115,6 +116,12 @@ public:
         pchMessageStart[2] = 0xb3;
         pchMessageStart[3] = 0xd9;
         pchMessageStart[3] = 0xd5;
+
+        pchMessageStart[0] = 0x06;
+        pchMessageStart[1] = 0x6d;
+        pchMessageStart[2] = 0x5a;
+        pchMessageStart[3] = 0xa8;
+
         nDefaultPort = 8333;
         nDefaultPort = 9333;
         nPruneAfterHeight = 100000;
@@ -125,7 +132,7 @@ public:
         assert(genesis.hashMerkleRoot == uint256S("0x40f97e1c17190cd24dad5a8fb7cfcf8b587c49e3e384af75bc6c6e7316afce4f"));
 
         // Note that of those with the service bits flag, most only support a subset of possible options
-        vSeeds.push_back(CDNSSeedData("seed1.lbtc.io", "seed1.lbtc.io")); // Pieter Wuille, only supports x1, x5, x9, and xd
+        //vSeeds.push_back(CDNSSeedData("127.0.0.1", "127.0.0.1")); // Pieter Wuille, only supports x1, x5, x9, and xd
         vSeeds.push_back(CDNSSeedData("seed2.lbtc.io", "seed2.lbtc.io")); // Pieter Wuille, only supports x1, x5, x9, and xd
         vSeeds.push_back(CDNSSeedData("seed3.lbtc.io", "seed3.lbtc.io")); // Pieter Wuille, only supports x1, x5, x9, and xd
         vSeeds.push_back(CDNSSeedData("seed4.lbtc.io", "seed4.lbtc.io")); // Pieter Wuille, only supports x1, x5, x9, and xd
@@ -136,7 +143,8 @@ public:
         vSeeds.push_back(CDNSSeedData("seed9.lbtc.io", "seed9.lbtc.io")); // Pieter Wuille, only supports x1, x5, x9, and xd
         vSeeds.push_back(CDNSSeedData("seed10.lbtc.io", "seed10.lbtc.io")); // Pieter Wuille, only supports x1, x5, x9, and xd
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,0);
+        //base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,0);
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,38);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5);
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,128);
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >();

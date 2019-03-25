@@ -117,7 +117,8 @@ bool AppInit(int argc, char* argv[])
             if(ChainNameFromCommandLine() == CBaseChainParams::TESTNET) {
                 COINBASE_MATURITY = 5000;
             } else {
-                COINBASE_MATURITY = 5000;
+                //COINBASE_MATURITY = 5000;
+                COINBASE_MATURITY = 10;
             }
         } catch (const std::exception& e) {
             fprintf(stderr, "Error: %s\n", e.what());

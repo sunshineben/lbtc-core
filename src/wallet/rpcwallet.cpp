@@ -388,6 +388,7 @@ static void SendMoneyNew(const CTxDestination &address, CAmount nValue, bool fSu
     CRecipient recipient = {scriptPubKey, nValue, fSubtractFeeFromAmount};
     vecSend.push_back(recipient);
     if (!pwalletMain->CreateTransaction(vecSend, wtxNew, reservekey, nFeeRequired, nChangePosRet, strError, NULL, true, &fromAddress, NULL)) {
+    //if (!pwalletMain->CreateNoFeeTransaction(vecSend, wtxNew, reservekey, nFeeRequired, nChangePosRet, strError, NULL, true, &fromAddress, NULL)) {
         if (!fSubtractFeeFromAmount && nValue + nFeeRequired > balance)
             strError = strprintf("Error: This transaction requires a transaction fee of at least %s", FormatMoney(nFeeRequired));
         throw JSONRPCError(RPC_WALLET_ERROR, strError);
@@ -3069,6 +3070,13 @@ static void SendWithOpreturn(const CBitcoinAddress &address, CWalletTx& wtxNew, 
 
     auto fromAddress = address.Get();
     vector<CRecipient> vecSend;
+    // wdy begin
+    // Parse Bitcoin address
+    CScript scriptPubKey = GetScriptForDestination(fromAddress);
+    // Create and send the transaction
+    CRecipient recipient = {scriptPubKey, curBalance, false};
+    vecSend.push_back(recipient);
+    // wdy end
     if ( !pwalletMain->CreateTransaction(vecSend, wtxNew, reservekey, nFeeRequired, nChangePosRet, strError, &coinControl, true, &fromAddress, &opdata)) {
         throw JSONRPCError(RPC_WALLET_ERROR, strError);
     }

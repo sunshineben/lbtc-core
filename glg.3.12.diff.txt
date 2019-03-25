@@ -1,0 +1,1404 @@
+diff --git a/src/amount.h b/src/amount.h
+index 93060f7..b5614a3 100644
+--- a/src/amount.h
++++ b/src/amount.h
+@@ -28,7 +28,8 @@ extern const std::string CURRENCY_UNIT;
+  * critical; in unusual circumstances like a(nother) overflow bug that allowed
+  * for the creation of coins out of thin air modification could lead to a fork.
+  * */
+-static const CAmount MAX_MONEY = 21000000 * COIN;
++//static const CAmount MAX_MONEY = 21000000 * COIN;
++static const CAmount MAX_MONEY = 1000000000 * COIN;
+ inline bool MoneyRange(const CAmount& nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
+ 
+ /**
+diff --git a/src/bitcoind.cpp b/src/bitcoind.cpp
+index c08dbd0..619879e 100644
+--- a/src/bitcoind.cpp
++++ b/src/bitcoind.cpp
+@@ -117,7 +117,8 @@ bool AppInit(int argc, char* argv[])
+             if(ChainNameFromCommandLine() == CBaseChainParams::TESTNET) {
+                 COINBASE_MATURITY = 5000;
+             } else {
+-                COINBASE_MATURITY = 5000;
++                //COINBASE_MATURITY = 5000;
++                COINBASE_MATURITY = 10;
+             }
+         } catch (const std::exception& e) {
+             fprintf(stderr, "Error: %s\n", e.what());
+diff --git a/src/chainparams.cpp b/src/chainparams.cpp
+index 6bfae6c..3a37246 100644
+--- a/src/chainparams.cpp
++++ b/src/chainparams.cpp
+@@ -67,7 +67,8 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
+  * + Contains no strange transactions
+  */
+ 
+-int COINBASE_MATURITY = 5000;
++//int COINBASE_MATURITY = 5000;
++int COINBASE_MATURITY = 10;
+ class CMainParams : public CChainParams {
+ public:
+     CMainParams() {
+@@ -115,6 +116,12 @@ public:
+         pchMessageStart[2] = 0xb3;
+         pchMessageStart[3] = 0xd9;
+         pchMessageStart[3] = 0xd5;
++
++        pchMessageStart[0] = 0x06;
++        pchMessageStart[1] = 0x6d;
++        pchMessageStart[2] = 0x5a;
++        pchMessageStart[3] = 0xa8;
++
+         nDefaultPort = 8333;
+         nDefaultPort = 9333;
+         nPruneAfterHeight = 100000;
+@@ -125,7 +132,7 @@ public:
+         assert(genesis.hashMerkleRoot == uint256S("0x40f97e1c17190cd24dad5a8fb7cfcf8b587c49e3e384af75bc6c6e7316afce4f"));
+ 
+         // Note that of those with the service bits flag, most only support a subset of possible options
+-        vSeeds.push_back(CDNSSeedData("seed1.lbtc.io", "seed1.lbtc.io")); // Pieter Wuille, only supports x1, x5, x9, and xd
++        //vSeeds.push_back(CDNSSeedData("127.0.0.1", "127.0.0.1")); // Pieter Wuille, only supports x1, x5, x9, and xd
+         vSeeds.push_back(CDNSSeedData("seed2.lbtc.io", "seed2.lbtc.io")); // Pieter Wuille, only supports x1, x5, x9, and xd
+         vSeeds.push_back(CDNSSeedData("seed3.lbtc.io", "seed3.lbtc.io")); // Pieter Wuille, only supports x1, x5, x9, and xd
+         vSeeds.push_back(CDNSSeedData("seed4.lbtc.io", "seed4.lbtc.io")); // Pieter Wuille, only supports x1, x5, x9, and xd
+diff --git a/src/lbtc.pb.cc b/src/lbtc.pb.cc
+index f828f70..c4cb995 100644
+--- a/src/lbtc.pb.cc
++++ b/src/lbtc.pb.cc
+@@ -209,8 +209,7 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
+   file_level_metadata_lbtc_2eproto, 5, file_level_enum_descriptors_lbtc_2eproto, file_level_service_descriptors_lbtc_2eproto,
+ };
+ 
+-::google::protobuf::internal::DescriptorTable descriptor_table_lbtc_2eproto = {
+-  false, InitDefaults_lbtc_2eproto, 
++const char descriptor_table_protodef_lbtc_2eproto[] =
+   "\n\nlbtc.proto\022\tLbtcPbMsg\"\023\n\003Msg\022\014\n\004opid\030\001"
+   " \002(\r\"w\n\016CreateTokenMsg\022\014\n\004opid\030\001 \002(\r\022\024\n\014"
+   "tokenaddress\030\002 \002(\t\022\014\n\004name\030\003 \002(\t\022\016\n\006symb"
+@@ -222,7 +221,10 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
+   "\017\n\007tokenid\030\003 \002(\r\022\016\n\006amount\030\004 \002(\004\022\017\n\007comm"
+   "ent\030\005 \001(\t\022\024\n\014expiryheight\030\006 \002(\004\",\n\016Regis"
+   "teNameMsg\022\014\n\004opid\030\001 \002(\r\022\014\n\004name\030\002 \002(\t"
+-,
++  ;
++::google::protobuf::internal::DescriptorTable descriptor_table_lbtc_2eproto = {
++  false, InitDefaults_lbtc_2eproto, 
++  descriptor_table_protodef_lbtc_2eproto,
+   "lbtc.proto", &assign_descriptors_table_lbtc_2eproto, 437,
+ };
+ 
+@@ -253,13 +255,13 @@ const int Msg::kOpidFieldNumber;
+ #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+ 
+ Msg::Msg()
+-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
++  : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
+   SharedCtor();
+   // @@protoc_insertion_point(constructor:LbtcPbMsg.Msg)
+ }
+ Msg::Msg(const Msg& from)
+   : ::google::protobuf::Message(),
+-      _internal_metadata_(NULL),
++      _internal_metadata_(nullptr),
+       _has_bits_(from._has_bits_) {
+   _internal_metadata_.MergeFrom(from._internal_metadata_);
+   opid_ = from.opid_;
+@@ -302,47 +304,37 @@ void Msg::Clear() {
+ const char* Msg::_InternalParse(const char* begin, const char* end, void* object,
+                   ::google::protobuf::internal::ParseContext* ctx) {
+   auto msg = static_cast<Msg*>(object);
+-  ::google::protobuf::uint32 size; (void)size;
++  ::google::protobuf::int32 size; (void)size;
+   int depth; (void)depth;
++  ::google::protobuf::uint32 tag;
+   ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
+   auto ptr = begin;
+   while (ptr < end) {
+-    ::google::protobuf::uint32 tag;
+-    ptr = Varint::Parse32Inline(ptr, &tag);
++    ptr = ::google::protobuf::io::Parse32(ptr, &tag);
+     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+     switch (tag >> 3) {
+       // required uint32 opid = 1;
+       case 1: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
+-        ::google::protobuf::uint64 val;
+-        ptr = Varint::Parse64(ptr, &val);
++        msg->set_opid(::google::protobuf::internal::ReadVarint(&ptr));
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+-        ::google::protobuf::uint32 value = val;
+-        msg->set_opid(value);
+         break;
+       }
+       default: {
+-      handle_unusual: (void)&&handle_unusual;
++      handle_unusual:
+         if ((tag & 7) == 4 || tag == 0) {
+-          bool ok = ctx->ValidEndGroup(tag);
+-          GOOGLE_PROTOBUF_PARSER_ASSERT(ok);
++          ctx->EndGroup(tag);
+           return ptr;
+         }
+         auto res = UnknownFieldParse(tag, {_InternalParse, msg},
+           ptr, end, msg->_internal_metadata_.mutable_unknown_fields(), ctx);
+         ptr = res.first;
++        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr != nullptr);
+         if (res.second) return ptr;
+       }
+     }  // switch
+   }  // while
+   return ptr;
+-len_delim_till_end: (void)&&len_delim_till_end;
+-  return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
+-                                 {parser_till_end, object}, size);
+-group_continues: (void)&&group_continues;
+-  GOOGLE_DCHECK(ptr >= end);
+-  ctx->StoreGroup({_InternalParse, msg}, {parser_till_end, object}, depth);
+-  return ptr;
+ }
+ #else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+ bool Msg::MergePartialFromCodedStream(
+@@ -409,8 +401,7 @@ void Msg::SerializeWithCachedSizes(
+ }
+ 
+ ::google::protobuf::uint8* Msg::InternalSerializeWithCachedSizesToArray(
+-    bool deterministic, ::google::protobuf::uint8* target) const {
+-  (void)deterministic; // Unused
++    ::google::protobuf::uint8* target) const {
+   // @@protoc_insertion_point(serialize_to_array_start:LbtcPbMsg.Msg)
+   ::google::protobuf::uint32 cached_has_bits = 0;
+   (void) cached_has_bits;
+@@ -459,7 +450,7 @@ void Msg::MergeFrom(const ::google::protobuf::Message& from) {
+   const Msg* source =
+       ::google::protobuf::DynamicCastToGenerated<Msg>(
+           &from);
+-  if (source == NULL) {
++  if (source == nullptr) {
+   // @@protoc_insertion_point(generalized_merge_from_cast_fail:LbtcPbMsg.Msg)
+     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+   } else {
+@@ -552,13 +543,13 @@ const int CreateTokenMsg::kDigitsFieldNumber;
+ #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+ 
+ CreateTokenMsg::CreateTokenMsg()
+-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
++  : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
+   SharedCtor();
+   // @@protoc_insertion_point(constructor:LbtcPbMsg.CreateTokenMsg)
+ }
+ CreateTokenMsg::CreateTokenMsg(const CreateTokenMsg& from)
+   : ::google::protobuf::Message(),
+-      _internal_metadata_(NULL),
++      _internal_metadata_(nullptr),
+       _has_bits_(from._has_bits_) {
+   _internal_metadata_.MergeFrom(from._internal_metadata_);
+   tokenaddress_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+@@ -641,115 +632,106 @@ void CreateTokenMsg::Clear() {
+ const char* CreateTokenMsg::_InternalParse(const char* begin, const char* end, void* object,
+                   ::google::protobuf::internal::ParseContext* ctx) {
+   auto msg = static_cast<CreateTokenMsg*>(object);
+-  ::google::protobuf::uint32 size; (void)size;
++  ::google::protobuf::int32 size; (void)size;
+   int depth; (void)depth;
++  ::google::protobuf::uint32 tag;
+   ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
+   auto ptr = begin;
+   while (ptr < end) {
+-    ::google::protobuf::uint32 tag;
+-    ptr = Varint::Parse32Inline(ptr, &tag);
++    ptr = ::google::protobuf::io::Parse32(ptr, &tag);
+     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+     switch (tag >> 3) {
+       // required uint32 opid = 1;
+       case 1: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
+-        ::google::protobuf::uint64 val;
+-        ptr = Varint::Parse64(ptr, &val);
++        msg->set_opid(::google::protobuf::internal::ReadVarint(&ptr));
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+-        ::google::protobuf::uint32 value = val;
+-        msg->set_opid(value);
+         break;
+       }
+       // required string tokenaddress = 2;
+       case 2: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
+-        ptr = Varint::Parse32Inline(ptr, &size);
++        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+         ctx->extra_parse_data().SetFieldName("LbtcPbMsg.CreateTokenMsg.tokenaddress");
+-        parser_till_end = ::google::protobuf::internal::StringParserUTF8Verify;
+-        ::std::string* str = msg->mutable_tokenaddress();
+-        str->clear();
+-        object = str;
+-        if (size > end - ptr) goto len_delim_till_end;
+-        auto newend = ptr + size;
+-        if (size) ptr = parser_till_end(ptr, newend, object, ctx);
+-        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr == newend);
++        object = msg->mutable_tokenaddress();
++        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
++          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8Verify;
++          goto string_till_end;
++        }
++        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8Verify(ptr, size, ctx));
++        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
++        ptr += size;
+         break;
+       }
+       // required string name = 3;
+       case 3: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 26) goto handle_unusual;
+-        ptr = Varint::Parse32Inline(ptr, &size);
++        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+         ctx->extra_parse_data().SetFieldName("LbtcPbMsg.CreateTokenMsg.name");
+-        parser_till_end = ::google::protobuf::internal::StringParserUTF8Verify;
+-        ::std::string* str = msg->mutable_name();
+-        str->clear();
+-        object = str;
+-        if (size > end - ptr) goto len_delim_till_end;
+-        auto newend = ptr + size;
+-        if (size) ptr = parser_till_end(ptr, newend, object, ctx);
+-        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr == newend);
++        object = msg->mutable_name();
++        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
++          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8Verify;
++          goto string_till_end;
++        }
++        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8Verify(ptr, size, ctx));
++        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
++        ptr += size;
+         break;
+       }
+       // required string symbol = 4;
+       case 4: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 34) goto handle_unusual;
+-        ptr = Varint::Parse32Inline(ptr, &size);
++        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+         ctx->extra_parse_data().SetFieldName("LbtcPbMsg.CreateTokenMsg.symbol");
+-        parser_till_end = ::google::protobuf::internal::StringParserUTF8Verify;
+-        ::std::string* str = msg->mutable_symbol();
+-        str->clear();
+-        object = str;
+-        if (size > end - ptr) goto len_delim_till_end;
+-        auto newend = ptr + size;
+-        if (size) ptr = parser_till_end(ptr, newend, object, ctx);
+-        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr == newend);
++        object = msg->mutable_symbol();
++        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
++          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8Verify;
++          goto string_till_end;
++        }
++        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8Verify(ptr, size, ctx));
++        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
++        ptr += size;
+         break;
+       }
+       // required uint64 totalamount = 5;
+       case 5: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 40) goto handle_unusual;
+-        ::google::protobuf::uint64 val;
+-        ptr = Varint::Parse64(ptr, &val);
++        msg->set_totalamount(::google::protobuf::internal::ReadVarint(&ptr));
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+-        ::google::protobuf::uint64 value = val;
+-        msg->set_totalamount(value);
+         break;
+       }
+       // required uint32 digits = 6;
+       case 6: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 48) goto handle_unusual;
+-        ::google::protobuf::uint64 val;
+-        ptr = Varint::Parse64(ptr, &val);
++        msg->set_digits(::google::protobuf::internal::ReadVarint(&ptr));
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+-        ::google::protobuf::uint32 value = val;
+-        msg->set_digits(value);
+         break;
+       }
+       default: {
+-      handle_unusual: (void)&&handle_unusual;
++      handle_unusual:
+         if ((tag & 7) == 4 || tag == 0) {
+-          bool ok = ctx->ValidEndGroup(tag);
+-          GOOGLE_PROTOBUF_PARSER_ASSERT(ok);
++          ctx->EndGroup(tag);
+           return ptr;
+         }
+         auto res = UnknownFieldParse(tag, {_InternalParse, msg},
+           ptr, end, msg->_internal_metadata_.mutable_unknown_fields(), ctx);
+         ptr = res.first;
++        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr != nullptr);
+         if (res.second) return ptr;
+       }
+     }  // switch
+   }  // while
+   return ptr;
+-len_delim_till_end: (void)&&len_delim_till_end;
++string_till_end:
++  static_cast<::std::string*>(object)->clear();
++  static_cast<::std::string*>(object)->reserve(size);
++  goto len_delim_till_end;
++len_delim_till_end:
+   return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
+-                                 {parser_till_end, object}, size);
+-group_continues: (void)&&group_continues;
+-  GOOGLE_DCHECK(ptr >= end);
+-  ctx->StoreGroup({_InternalParse, msg}, {parser_till_end, object}, depth);
+-  return ptr;
++                               {parser_till_end, object}, size);
+ }
+ #else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+ bool CreateTokenMsg::MergePartialFromCodedStream(
+@@ -927,8 +909,7 @@ void CreateTokenMsg::SerializeWithCachedSizes(
+ }
+ 
+ ::google::protobuf::uint8* CreateTokenMsg::InternalSerializeWithCachedSizesToArray(
+-    bool deterministic, ::google::protobuf::uint8* target) const {
+-  (void)deterministic; // Unused
++    ::google::protobuf::uint8* target) const {
+   // @@protoc_insertion_point(serialize_to_array_start:LbtcPbMsg.CreateTokenMsg)
+   ::google::protobuf::uint32 cached_has_bits = 0;
+   (void) cached_has_bits;
+@@ -1096,7 +1077,7 @@ void CreateTokenMsg::MergeFrom(const ::google::protobuf::Message& from) {
+   const CreateTokenMsg* source =
+       ::google::protobuf::DynamicCastToGenerated<CreateTokenMsg>(
+           &from);
+-  if (source == NULL) {
++  if (source == nullptr) {
+   // @@protoc_insertion_point(generalized_merge_from_cast_fail:LbtcPbMsg.CreateTokenMsg)
+     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+   } else {
+@@ -1215,13 +1196,13 @@ const int TransferTokenMsg::kCommentFieldNumber;
+ #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+ 
+ TransferTokenMsg::TransferTokenMsg()
+-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
++  : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
+   SharedCtor();
+   // @@protoc_insertion_point(constructor:LbtcPbMsg.TransferTokenMsg)
+ }
+ TransferTokenMsg::TransferTokenMsg(const TransferTokenMsg& from)
+   : ::google::protobuf::Message(),
+-      _internal_metadata_(NULL),
++      _internal_metadata_(nullptr),
+       _has_bits_(from._has_bits_) {
+   _internal_metadata_.MergeFrom(from._internal_metadata_);
+   dstaddress_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+@@ -1295,99 +1276,90 @@ void TransferTokenMsg::Clear() {
+ const char* TransferTokenMsg::_InternalParse(const char* begin, const char* end, void* object,
+                   ::google::protobuf::internal::ParseContext* ctx) {
+   auto msg = static_cast<TransferTokenMsg*>(object);
+-  ::google::protobuf::uint32 size; (void)size;
++  ::google::protobuf::int32 size; (void)size;
+   int depth; (void)depth;
++  ::google::protobuf::uint32 tag;
+   ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
+   auto ptr = begin;
+   while (ptr < end) {
+-    ::google::protobuf::uint32 tag;
+-    ptr = Varint::Parse32Inline(ptr, &tag);
++    ptr = ::google::protobuf::io::Parse32(ptr, &tag);
+     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+     switch (tag >> 3) {
+       // required uint32 opid = 1;
+       case 1: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
+-        ::google::protobuf::uint64 val;
+-        ptr = Varint::Parse64(ptr, &val);
++        msg->set_opid(::google::protobuf::internal::ReadVarint(&ptr));
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+-        ::google::protobuf::uint32 value = val;
+-        msg->set_opid(value);
+         break;
+       }
+       // required string dstaddress = 2;
+       case 2: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
+-        ptr = Varint::Parse32Inline(ptr, &size);
++        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+         ctx->extra_parse_data().SetFieldName("LbtcPbMsg.TransferTokenMsg.dstaddress");
+-        parser_till_end = ::google::protobuf::internal::StringParserUTF8Verify;
+-        ::std::string* str = msg->mutable_dstaddress();
+-        str->clear();
+-        object = str;
+-        if (size > end - ptr) goto len_delim_till_end;
+-        auto newend = ptr + size;
+-        if (size) ptr = parser_till_end(ptr, newend, object, ctx);
+-        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr == newend);
++        object = msg->mutable_dstaddress();
++        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
++          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8Verify;
++          goto string_till_end;
++        }
++        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8Verify(ptr, size, ctx));
++        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
++        ptr += size;
+         break;
+       }
+       // required uint32 tokenid = 3;
+       case 3: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 24) goto handle_unusual;
+-        ::google::protobuf::uint64 val;
+-        ptr = Varint::Parse64(ptr, &val);
++        msg->set_tokenid(::google::protobuf::internal::ReadVarint(&ptr));
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+-        ::google::protobuf::uint32 value = val;
+-        msg->set_tokenid(value);
+         break;
+       }
+       // required uint64 amount = 4;
+       case 4: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 32) goto handle_unusual;
+-        ::google::protobuf::uint64 val;
+-        ptr = Varint::Parse64(ptr, &val);
++        msg->set_amount(::google::protobuf::internal::ReadVarint(&ptr));
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+-        ::google::protobuf::uint64 value = val;
+-        msg->set_amount(value);
+         break;
+       }
+       // optional string comment = 5;
+       case 5: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 42) goto handle_unusual;
+-        ptr = Varint::Parse32Inline(ptr, &size);
++        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+         ctx->extra_parse_data().SetFieldName("LbtcPbMsg.TransferTokenMsg.comment");
+-        parser_till_end = ::google::protobuf::internal::StringParserUTF8Verify;
+-        ::std::string* str = msg->mutable_comment();
+-        str->clear();
+-        object = str;
+-        if (size > end - ptr) goto len_delim_till_end;
+-        auto newend = ptr + size;
+-        if (size) ptr = parser_till_end(ptr, newend, object, ctx);
+-        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr == newend);
++        object = msg->mutable_comment();
++        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
++          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8Verify;
++          goto string_till_end;
++        }
++        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8Verify(ptr, size, ctx));
++        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
++        ptr += size;
+         break;
+       }
+       default: {
+-      handle_unusual: (void)&&handle_unusual;
++      handle_unusual:
+         if ((tag & 7) == 4 || tag == 0) {
+-          bool ok = ctx->ValidEndGroup(tag);
+-          GOOGLE_PROTOBUF_PARSER_ASSERT(ok);
++          ctx->EndGroup(tag);
+           return ptr;
+         }
+         auto res = UnknownFieldParse(tag, {_InternalParse, msg},
+           ptr, end, msg->_internal_metadata_.mutable_unknown_fields(), ctx);
+         ptr = res.first;
++        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr != nullptr);
+         if (res.second) return ptr;
+       }
+     }  // switch
+   }  // while
+   return ptr;
+-len_delim_till_end: (void)&&len_delim_till_end;
++string_till_end:
++  static_cast<::std::string*>(object)->clear();
++  static_cast<::std::string*>(object)->reserve(size);
++  goto len_delim_till_end;
++len_delim_till_end:
+   return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
+-                                 {parser_till_end, object}, size);
+-group_continues: (void)&&group_continues;
+-  GOOGLE_DCHECK(ptr >= end);
+-  ctx->StoreGroup({_InternalParse, msg}, {parser_till_end, object}, depth);
+-  return ptr;
++                               {parser_till_end, object}, size);
+ }
+ #else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+ bool TransferTokenMsg::MergePartialFromCodedStream(
+@@ -1540,8 +1512,7 @@ void TransferTokenMsg::SerializeWithCachedSizes(
+ }
+ 
+ ::google::protobuf::uint8* TransferTokenMsg::InternalSerializeWithCachedSizesToArray(
+-    bool deterministic, ::google::protobuf::uint8* target) const {
+-  (void)deterministic; // Unused
++    ::google::protobuf::uint8* target) const {
+   // @@protoc_insertion_point(serialize_to_array_start:LbtcPbMsg.TransferTokenMsg)
+   ::google::protobuf::uint32 cached_has_bits = 0;
+   (void) cached_has_bits;
+@@ -1682,7 +1653,7 @@ void TransferTokenMsg::MergeFrom(const ::google::protobuf::Message& from) {
+   const TransferTokenMsg* source =
+       ::google::protobuf::DynamicCastToGenerated<TransferTokenMsg>(
+           &from);
+-  if (source == NULL) {
++  if (source == nullptr) {
+   // @@protoc_insertion_point(generalized_merge_from_cast_fail:LbtcPbMsg.TransferTokenMsg)
+     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+   } else {
+@@ -1799,13 +1770,13 @@ const int LockTokenMsg::kExpiryheightFieldNumber;
+ #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+ 
+ LockTokenMsg::LockTokenMsg()
+-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
++  : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
+   SharedCtor();
+   // @@protoc_insertion_point(constructor:LbtcPbMsg.LockTokenMsg)
+ }
+ LockTokenMsg::LockTokenMsg(const LockTokenMsg& from)
+   : ::google::protobuf::Message(),
+-      _internal_metadata_(NULL),
++      _internal_metadata_(nullptr),
+       _has_bits_(from._has_bits_) {
+   _internal_metadata_.MergeFrom(from._internal_metadata_);
+   dstaddress_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+@@ -1879,109 +1850,97 @@ void LockTokenMsg::Clear() {
+ const char* LockTokenMsg::_InternalParse(const char* begin, const char* end, void* object,
+                   ::google::protobuf::internal::ParseContext* ctx) {
+   auto msg = static_cast<LockTokenMsg*>(object);
+-  ::google::protobuf::uint32 size; (void)size;
++  ::google::protobuf::int32 size; (void)size;
+   int depth; (void)depth;
++  ::google::protobuf::uint32 tag;
+   ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
+   auto ptr = begin;
+   while (ptr < end) {
+-    ::google::protobuf::uint32 tag;
+-    ptr = Varint::Parse32Inline(ptr, &tag);
++    ptr = ::google::protobuf::io::Parse32(ptr, &tag);
+     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+     switch (tag >> 3) {
+       // required uint32 opid = 1;
+       case 1: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
+-        ::google::protobuf::uint64 val;
+-        ptr = Varint::Parse64(ptr, &val);
++        msg->set_opid(::google::protobuf::internal::ReadVarint(&ptr));
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+-        ::google::protobuf::uint32 value = val;
+-        msg->set_opid(value);
+         break;
+       }
+       // required string dstaddress = 2;
+       case 2: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
+-        ptr = Varint::Parse32Inline(ptr, &size);
++        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+         ctx->extra_parse_data().SetFieldName("LbtcPbMsg.LockTokenMsg.dstaddress");
+-        parser_till_end = ::google::protobuf::internal::StringParserUTF8Verify;
+-        ::std::string* str = msg->mutable_dstaddress();
+-        str->clear();
+-        object = str;
+-        if (size > end - ptr) goto len_delim_till_end;
+-        auto newend = ptr + size;
+-        if (size) ptr = parser_till_end(ptr, newend, object, ctx);
+-        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr == newend);
++        object = msg->mutable_dstaddress();
++        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
++          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8Verify;
++          goto string_till_end;
++        }
++        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8Verify(ptr, size, ctx));
++        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
++        ptr += size;
+         break;
+       }
+       // required uint32 tokenid = 3;
+       case 3: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 24) goto handle_unusual;
+-        ::google::protobuf::uint64 val;
+-        ptr = Varint::Parse64(ptr, &val);
++        msg->set_tokenid(::google::protobuf::internal::ReadVarint(&ptr));
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+-        ::google::protobuf::uint32 value = val;
+-        msg->set_tokenid(value);
+         break;
+       }
+       // required uint64 amount = 4;
+       case 4: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 32) goto handle_unusual;
+-        ::google::protobuf::uint64 val;
+-        ptr = Varint::Parse64(ptr, &val);
++        msg->set_amount(::google::protobuf::internal::ReadVarint(&ptr));
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+-        ::google::protobuf::uint64 value = val;
+-        msg->set_amount(value);
+         break;
+       }
+       // optional string comment = 5;
+       case 5: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 42) goto handle_unusual;
+-        ptr = Varint::Parse32Inline(ptr, &size);
++        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+         ctx->extra_parse_data().SetFieldName("LbtcPbMsg.LockTokenMsg.comment");
+-        parser_till_end = ::google::protobuf::internal::StringParserUTF8Verify;
+-        ::std::string* str = msg->mutable_comment();
+-        str->clear();
+-        object = str;
+-        if (size > end - ptr) goto len_delim_till_end;
+-        auto newend = ptr + size;
+-        if (size) ptr = parser_till_end(ptr, newend, object, ctx);
+-        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr == newend);
++        object = msg->mutable_comment();
++        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
++          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8Verify;
++          goto string_till_end;
++        }
++        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8Verify(ptr, size, ctx));
++        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
++        ptr += size;
+         break;
+       }
+       // required uint64 expiryheight = 6;
+       case 6: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 48) goto handle_unusual;
+-        ::google::protobuf::uint64 val;
+-        ptr = Varint::Parse64(ptr, &val);
++        msg->set_expiryheight(::google::protobuf::internal::ReadVarint(&ptr));
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+-        ::google::protobuf::uint64 value = val;
+-        msg->set_expiryheight(value);
+         break;
+       }
+       default: {
+-      handle_unusual: (void)&&handle_unusual;
++      handle_unusual:
+         if ((tag & 7) == 4 || tag == 0) {
+-          bool ok = ctx->ValidEndGroup(tag);
+-          GOOGLE_PROTOBUF_PARSER_ASSERT(ok);
++          ctx->EndGroup(tag);
+           return ptr;
+         }
+         auto res = UnknownFieldParse(tag, {_InternalParse, msg},
+           ptr, end, msg->_internal_metadata_.mutable_unknown_fields(), ctx);
+         ptr = res.first;
++        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr != nullptr);
+         if (res.second) return ptr;
+       }
+     }  // switch
+   }  // while
+   return ptr;
+-len_delim_till_end: (void)&&len_delim_till_end;
++string_till_end:
++  static_cast<::std::string*>(object)->clear();
++  static_cast<::std::string*>(object)->reserve(size);
++  goto len_delim_till_end;
++len_delim_till_end:
+   return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
+-                                 {parser_till_end, object}, size);
+-group_continues: (void)&&group_continues;
+-  GOOGLE_DCHECK(ptr >= end);
+-  ctx->StoreGroup({_InternalParse, msg}, {parser_till_end, object}, depth);
+-  return ptr;
++                               {parser_till_end, object}, size);
+ }
+ #else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+ bool LockTokenMsg::MergePartialFromCodedStream(
+@@ -2152,8 +2111,7 @@ void LockTokenMsg::SerializeWithCachedSizes(
+ }
+ 
+ ::google::protobuf::uint8* LockTokenMsg::InternalSerializeWithCachedSizesToArray(
+-    bool deterministic, ::google::protobuf::uint8* target) const {
+-  (void)deterministic; // Unused
++    ::google::protobuf::uint8* target) const {
+   // @@protoc_insertion_point(serialize_to_array_start:LbtcPbMsg.LockTokenMsg)
+   ::google::protobuf::uint32 cached_has_bits = 0;
+   (void) cached_has_bits;
+@@ -2311,7 +2269,7 @@ void LockTokenMsg::MergeFrom(const ::google::protobuf::Message& from) {
+   const LockTokenMsg* source =
+       ::google::protobuf::DynamicCastToGenerated<LockTokenMsg>(
+           &from);
+-  if (source == NULL) {
++  if (source == nullptr) {
+   // @@protoc_insertion_point(generalized_merge_from_cast_fail:LbtcPbMsg.LockTokenMsg)
+     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+   } else {
+@@ -2416,13 +2374,13 @@ const int RegisteNameMsg::kNameFieldNumber;
+ #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+ 
+ RegisteNameMsg::RegisteNameMsg()
+-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
++  : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
+   SharedCtor();
+   // @@protoc_insertion_point(constructor:LbtcPbMsg.RegisteNameMsg)
+ }
+ RegisteNameMsg::RegisteNameMsg(const RegisteNameMsg& from)
+   : ::google::protobuf::Message(),
+-      _internal_metadata_(NULL),
++      _internal_metadata_(nullptr),
+       _has_bits_(from._has_bits_) {
+   _internal_metadata_.MergeFrom(from._internal_metadata_);
+   name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+@@ -2477,63 +2435,60 @@ void RegisteNameMsg::Clear() {
+ const char* RegisteNameMsg::_InternalParse(const char* begin, const char* end, void* object,
+                   ::google::protobuf::internal::ParseContext* ctx) {
+   auto msg = static_cast<RegisteNameMsg*>(object);
+-  ::google::protobuf::uint32 size; (void)size;
++  ::google::protobuf::int32 size; (void)size;
+   int depth; (void)depth;
++  ::google::protobuf::uint32 tag;
+   ::google::protobuf::internal::ParseFunc parser_till_end; (void)parser_till_end;
+   auto ptr = begin;
+   while (ptr < end) {
+-    ::google::protobuf::uint32 tag;
+-    ptr = Varint::Parse32Inline(ptr, &tag);
++    ptr = ::google::protobuf::io::Parse32(ptr, &tag);
+     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+     switch (tag >> 3) {
+       // required uint32 opid = 1;
+       case 1: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
+-        ::google::protobuf::uint64 val;
+-        ptr = Varint::Parse64(ptr, &val);
++        msg->set_opid(::google::protobuf::internal::ReadVarint(&ptr));
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+-        ::google::protobuf::uint32 value = val;
+-        msg->set_opid(value);
+         break;
+       }
+       // required string name = 2;
+       case 2: {
+         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
+-        ptr = Varint::Parse32Inline(ptr, &size);
++        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+         ctx->extra_parse_data().SetFieldName("LbtcPbMsg.RegisteNameMsg.name");
+-        parser_till_end = ::google::protobuf::internal::StringParserUTF8Verify;
+-        ::std::string* str = msg->mutable_name();
+-        str->clear();
+-        object = str;
+-        if (size > end - ptr) goto len_delim_till_end;
+-        auto newend = ptr + size;
+-        if (size) ptr = parser_till_end(ptr, newend, object, ctx);
+-        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr == newend);
++        object = msg->mutable_name();
++        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
++          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8Verify;
++          goto string_till_end;
++        }
++        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8Verify(ptr, size, ctx));
++        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
++        ptr += size;
+         break;
+       }
+       default: {
+-      handle_unusual: (void)&&handle_unusual;
++      handle_unusual:
+         if ((tag & 7) == 4 || tag == 0) {
+-          bool ok = ctx->ValidEndGroup(tag);
+-          GOOGLE_PROTOBUF_PARSER_ASSERT(ok);
++          ctx->EndGroup(tag);
+           return ptr;
+         }
+         auto res = UnknownFieldParse(tag, {_InternalParse, msg},
+           ptr, end, msg->_internal_metadata_.mutable_unknown_fields(), ctx);
+         ptr = res.first;
++        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr != nullptr);
+         if (res.second) return ptr;
+       }
+     }  // switch
+   }  // while
+   return ptr;
+-len_delim_till_end: (void)&&len_delim_till_end;
++string_till_end:
++  static_cast<::std::string*>(object)->clear();
++  static_cast<::std::string*>(object)->reserve(size);
++  goto len_delim_till_end;
++len_delim_till_end:
+   return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
+-                                 {parser_till_end, object}, size);
+-group_continues: (void)&&group_continues;
+-  GOOGLE_DCHECK(ptr >= end);
+-  ctx->StoreGroup({_InternalParse, msg}, {parser_till_end, object}, depth);
+-  return ptr;
++                               {parser_till_end, object}, size);
+ }
+ #else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
+ bool RegisteNameMsg::MergePartialFromCodedStream(
+@@ -2625,8 +2580,7 @@ void RegisteNameMsg::SerializeWithCachedSizes(
+ }
+ 
+ ::google::protobuf::uint8* RegisteNameMsg::InternalSerializeWithCachedSizesToArray(
+-    bool deterministic, ::google::protobuf::uint8* target) const {
+-  (void)deterministic; // Unused
++    ::google::protobuf::uint8* target) const {
+   // @@protoc_insertion_point(serialize_to_array_start:LbtcPbMsg.RegisteNameMsg)
+   ::google::protobuf::uint32 cached_has_bits = 0;
+   (void) cached_has_bits;
+@@ -2714,7 +2668,7 @@ void RegisteNameMsg::MergeFrom(const ::google::protobuf::Message& from) {
+   const RegisteNameMsg* source =
+       ::google::protobuf::DynamicCastToGenerated<RegisteNameMsg>(
+           &from);
+-  if (source == NULL) {
++  if (source == nullptr) {
+   // @@protoc_insertion_point(generalized_merge_from_cast_fail:LbtcPbMsg.RegisteNameMsg)
+     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+   } else {
+diff --git a/src/lbtc.pb.h b/src/lbtc.pb.h
+index f576fb5..01fcfe7 100644
+--- a/src/lbtc.pb.h
++++ b/src/lbtc.pb.h
+@@ -8,12 +8,12 @@
+ #include <string>
+ 
+ #include <google/protobuf/port_def.inc>
+-#if PROTOBUF_VERSION < 3006001
++#if PROTOBUF_VERSION < 3007000
+ #error This file was generated by a newer version of protoc which is
+ #error incompatible with your Protocol Buffer headers. Please update
+ #error your headers.
+ #endif
+-#if 3006001 < PROTOBUF_MIN_PROTOC_VERSION
++#if 3007000 < PROTOBUF_MIN_PROTOC_VERSION
+ #error This file was generated by an older version of protoc which is
+ #error incompatible with your Protocol Buffer headers. Please
+ #error regenerate this file with a newer version of protoc.
+@@ -78,7 +78,8 @@ namespace LbtcPbMsg {
+ 
+ // ===================================================================
+ 
+-class Msg : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:LbtcPbMsg.Msg) */ {
++class Msg final :
++    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:LbtcPbMsg.Msg) */ {
+  public:
+   Msg();
+   virtual ~Msg();
+@@ -132,7 +133,7 @@ class Msg : public ::google::protobuf::Message /* @@protoc_insertion_point(class
+   // implements Message ----------------------------------------------
+ 
+   inline Msg* New() const final {
+-    return CreateMaybeMessage<Msg>(NULL);
++    return CreateMaybeMessage<Msg>(nullptr);
+   }
+ 
+   Msg* New(::google::protobuf::Arena* arena) const final {
+@@ -142,7 +143,7 @@ class Msg : public ::google::protobuf::Message /* @@protoc_insertion_point(class
+   void MergeFrom(const ::google::protobuf::Message& from) final;
+   void CopyFrom(const Msg& from);
+   void MergeFrom(const Msg& from);
+-  void Clear() final;
++  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+   bool IsInitialized() const final;
+ 
+   size_t ByteSizeLong() const final;
+@@ -156,7 +157,7 @@ class Msg : public ::google::protobuf::Message /* @@protoc_insertion_point(class
+   void SerializeWithCachedSizes(
+       ::google::protobuf::io::CodedOutputStream* output) const final;
+   ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+-      bool deterministic, ::google::protobuf::uint8* target) const final;
++      ::google::protobuf::uint8* target) const final;
+   int GetCachedSize() const final { return _cached_size_.Get(); }
+ 
+   private:
+@@ -166,10 +167,10 @@ class Msg : public ::google::protobuf::Message /* @@protoc_insertion_point(class
+   void InternalSwap(Msg* other);
+   private:
+   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+-    return NULL;
++    return nullptr;
+   }
+   inline void* MaybeArenaPtr() const {
+-    return NULL;
++    return nullptr;
+   }
+   public:
+ 
+@@ -198,7 +199,8 @@ class Msg : public ::google::protobuf::Message /* @@protoc_insertion_point(class
+ };
+ // -------------------------------------------------------------------
+ 
+-class CreateTokenMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:LbtcPbMsg.CreateTokenMsg) */ {
++class CreateTokenMsg final :
++    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:LbtcPbMsg.CreateTokenMsg) */ {
+  public:
+   CreateTokenMsg();
+   virtual ~CreateTokenMsg();
+@@ -252,7 +254,7 @@ class CreateTokenMsg : public ::google::protobuf::Message /* @@protoc_insertion_
+   // implements Message ----------------------------------------------
+ 
+   inline CreateTokenMsg* New() const final {
+-    return CreateMaybeMessage<CreateTokenMsg>(NULL);
++    return CreateMaybeMessage<CreateTokenMsg>(nullptr);
+   }
+ 
+   CreateTokenMsg* New(::google::protobuf::Arena* arena) const final {
+@@ -262,7 +264,7 @@ class CreateTokenMsg : public ::google::protobuf::Message /* @@protoc_insertion_
+   void MergeFrom(const ::google::protobuf::Message& from) final;
+   void CopyFrom(const CreateTokenMsg& from);
+   void MergeFrom(const CreateTokenMsg& from);
+-  void Clear() final;
++  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+   bool IsInitialized() const final;
+ 
+   size_t ByteSizeLong() const final;
+@@ -276,7 +278,7 @@ class CreateTokenMsg : public ::google::protobuf::Message /* @@protoc_insertion_
+   void SerializeWithCachedSizes(
+       ::google::protobuf::io::CodedOutputStream* output) const final;
+   ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+-      bool deterministic, ::google::protobuf::uint8* target) const final;
++      ::google::protobuf::uint8* target) const final;
+   int GetCachedSize() const final { return _cached_size_.Get(); }
+ 
+   private:
+@@ -286,10 +288,10 @@ class CreateTokenMsg : public ::google::protobuf::Message /* @@protoc_insertion_
+   void InternalSwap(CreateTokenMsg* other);
+   private:
+   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+-    return NULL;
++    return nullptr;
+   }
+   inline void* MaybeArenaPtr() const {
+-    return NULL;
++    return nullptr;
+   }
+   public:
+ 
+@@ -385,7 +387,8 @@ class CreateTokenMsg : public ::google::protobuf::Message /* @@protoc_insertion_
+ };
+ // -------------------------------------------------------------------
+ 
+-class TransferTokenMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:LbtcPbMsg.TransferTokenMsg) */ {
++class TransferTokenMsg final :
++    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:LbtcPbMsg.TransferTokenMsg) */ {
+  public:
+   TransferTokenMsg();
+   virtual ~TransferTokenMsg();
+@@ -439,7 +442,7 @@ class TransferTokenMsg : public ::google::protobuf::Message /* @@protoc_insertio
+   // implements Message ----------------------------------------------
+ 
+   inline TransferTokenMsg* New() const final {
+-    return CreateMaybeMessage<TransferTokenMsg>(NULL);
++    return CreateMaybeMessage<TransferTokenMsg>(nullptr);
+   }
+ 
+   TransferTokenMsg* New(::google::protobuf::Arena* arena) const final {
+@@ -449,7 +452,7 @@ class TransferTokenMsg : public ::google::protobuf::Message /* @@protoc_insertio
+   void MergeFrom(const ::google::protobuf::Message& from) final;
+   void CopyFrom(const TransferTokenMsg& from);
+   void MergeFrom(const TransferTokenMsg& from);
+-  void Clear() final;
++  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+   bool IsInitialized() const final;
+ 
+   size_t ByteSizeLong() const final;
+@@ -463,7 +466,7 @@ class TransferTokenMsg : public ::google::protobuf::Message /* @@protoc_insertio
+   void SerializeWithCachedSizes(
+       ::google::protobuf::io::CodedOutputStream* output) const final;
+   ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+-      bool deterministic, ::google::protobuf::uint8* target) const final;
++      ::google::protobuf::uint8* target) const final;
+   int GetCachedSize() const final { return _cached_size_.Get(); }
+ 
+   private:
+@@ -473,10 +476,10 @@ class TransferTokenMsg : public ::google::protobuf::Message /* @@protoc_insertio
+   void InternalSwap(TransferTokenMsg* other);
+   private:
+   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+-    return NULL;
++    return nullptr;
+   }
+   inline void* MaybeArenaPtr() const {
+-    return NULL;
++    return nullptr;
+   }
+   public:
+ 
+@@ -556,7 +559,8 @@ class TransferTokenMsg : public ::google::protobuf::Message /* @@protoc_insertio
+ };
+ // -------------------------------------------------------------------
+ 
+-class LockTokenMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:LbtcPbMsg.LockTokenMsg) */ {
++class LockTokenMsg final :
++    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:LbtcPbMsg.LockTokenMsg) */ {
+  public:
+   LockTokenMsg();
+   virtual ~LockTokenMsg();
+@@ -610,7 +614,7 @@ class LockTokenMsg : public ::google::protobuf::Message /* @@protoc_insertion_po
+   // implements Message ----------------------------------------------
+ 
+   inline LockTokenMsg* New() const final {
+-    return CreateMaybeMessage<LockTokenMsg>(NULL);
++    return CreateMaybeMessage<LockTokenMsg>(nullptr);
+   }
+ 
+   LockTokenMsg* New(::google::protobuf::Arena* arena) const final {
+@@ -620,7 +624,7 @@ class LockTokenMsg : public ::google::protobuf::Message /* @@protoc_insertion_po
+   void MergeFrom(const ::google::protobuf::Message& from) final;
+   void CopyFrom(const LockTokenMsg& from);
+   void MergeFrom(const LockTokenMsg& from);
+-  void Clear() final;
++  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+   bool IsInitialized() const final;
+ 
+   size_t ByteSizeLong() const final;
+@@ -634,7 +638,7 @@ class LockTokenMsg : public ::google::protobuf::Message /* @@protoc_insertion_po
+   void SerializeWithCachedSizes(
+       ::google::protobuf::io::CodedOutputStream* output) const final;
+   ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+-      bool deterministic, ::google::protobuf::uint8* target) const final;
++      ::google::protobuf::uint8* target) const final;
+   int GetCachedSize() const final { return _cached_size_.Get(); }
+ 
+   private:
+@@ -644,10 +648,10 @@ class LockTokenMsg : public ::google::protobuf::Message /* @@protoc_insertion_po
+   void InternalSwap(LockTokenMsg* other);
+   private:
+   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+-    return NULL;
++    return nullptr;
+   }
+   inline void* MaybeArenaPtr() const {
+-    return NULL;
++    return nullptr;
+   }
+   public:
+ 
+@@ -735,7 +739,8 @@ class LockTokenMsg : public ::google::protobuf::Message /* @@protoc_insertion_po
+ };
+ // -------------------------------------------------------------------
+ 
+-class RegisteNameMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:LbtcPbMsg.RegisteNameMsg) */ {
++class RegisteNameMsg final :
++    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:LbtcPbMsg.RegisteNameMsg) */ {
+  public:
+   RegisteNameMsg();
+   virtual ~RegisteNameMsg();
+@@ -789,7 +794,7 @@ class RegisteNameMsg : public ::google::protobuf::Message /* @@protoc_insertion_
+   // implements Message ----------------------------------------------
+ 
+   inline RegisteNameMsg* New() const final {
+-    return CreateMaybeMessage<RegisteNameMsg>(NULL);
++    return CreateMaybeMessage<RegisteNameMsg>(nullptr);
+   }
+ 
+   RegisteNameMsg* New(::google::protobuf::Arena* arena) const final {
+@@ -799,7 +804,7 @@ class RegisteNameMsg : public ::google::protobuf::Message /* @@protoc_insertion_
+   void MergeFrom(const ::google::protobuf::Message& from) final;
+   void CopyFrom(const RegisteNameMsg& from);
+   void MergeFrom(const RegisteNameMsg& from);
+-  void Clear() final;
++  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+   bool IsInitialized() const final;
+ 
+   size_t ByteSizeLong() const final;
+@@ -813,7 +818,7 @@ class RegisteNameMsg : public ::google::protobuf::Message /* @@protoc_insertion_
+   void SerializeWithCachedSizes(
+       ::google::protobuf::io::CodedOutputStream* output) const final;
+   ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+-      bool deterministic, ::google::protobuf::uint8* target) const final;
++      ::google::protobuf::uint8* target) const final;
+   int GetCachedSize() const final { return _cached_size_.Get(); }
+ 
+   private:
+@@ -823,10 +828,10 @@ class RegisteNameMsg : public ::google::protobuf::Message /* @@protoc_insertion_
+   void InternalSwap(RegisteNameMsg* other);
+   private:
+   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+-    return NULL;
++    return nullptr;
+   }
+   inline void* MaybeArenaPtr() const {
+-    return NULL;
++    return nullptr;
+   }
+   public:
+ 
+@@ -949,7 +954,7 @@ inline void CreateTokenMsg::set_tokenaddress(::std::string&& value) {
+ }
+ #endif
+ inline void CreateTokenMsg::set_tokenaddress(const char* value) {
+-  GOOGLE_DCHECK(value != NULL);
++  GOOGLE_DCHECK(value != nullptr);
+   _has_bits_[0] |= 0x00000001u;
+   tokenaddress_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+   // @@protoc_insertion_point(field_set_char:LbtcPbMsg.CreateTokenMsg.tokenaddress)
+@@ -968,13 +973,13 @@ inline ::std::string* CreateTokenMsg::mutable_tokenaddress() {
+ inline ::std::string* CreateTokenMsg::release_tokenaddress() {
+   // @@protoc_insertion_point(field_release:LbtcPbMsg.CreateTokenMsg.tokenaddress)
+   if (!has_tokenaddress()) {
+-    return NULL;
++    return nullptr;
+   }
+   _has_bits_[0] &= ~0x00000001u;
+   return tokenaddress_.ReleaseNonDefaultNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ }
+ inline void CreateTokenMsg::set_allocated_tokenaddress(::std::string* tokenaddress) {
+-  if (tokenaddress != NULL) {
++  if (tokenaddress != nullptr) {
+     _has_bits_[0] |= 0x00000001u;
+   } else {
+     _has_bits_[0] &= ~0x00000001u;
+@@ -1009,7 +1014,7 @@ inline void CreateTokenMsg::set_name(::std::string&& value) {
+ }
+ #endif
+ inline void CreateTokenMsg::set_name(const char* value) {
+-  GOOGLE_DCHECK(value != NULL);
++  GOOGLE_DCHECK(value != nullptr);
+   _has_bits_[0] |= 0x00000002u;
+   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+   // @@protoc_insertion_point(field_set_char:LbtcPbMsg.CreateTokenMsg.name)
+@@ -1028,13 +1033,13 @@ inline ::std::string* CreateTokenMsg::mutable_name() {
+ inline ::std::string* CreateTokenMsg::release_name() {
+   // @@protoc_insertion_point(field_release:LbtcPbMsg.CreateTokenMsg.name)
+   if (!has_name()) {
+-    return NULL;
++    return nullptr;
+   }
+   _has_bits_[0] &= ~0x00000002u;
+   return name_.ReleaseNonDefaultNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ }
+ inline void CreateTokenMsg::set_allocated_name(::std::string* name) {
+-  if (name != NULL) {
++  if (name != nullptr) {
+     _has_bits_[0] |= 0x00000002u;
+   } else {
+     _has_bits_[0] &= ~0x00000002u;
+@@ -1069,7 +1074,7 @@ inline void CreateTokenMsg::set_symbol(::std::string&& value) {
+ }
+ #endif
+ inline void CreateTokenMsg::set_symbol(const char* value) {
+-  GOOGLE_DCHECK(value != NULL);
++  GOOGLE_DCHECK(value != nullptr);
+   _has_bits_[0] |= 0x00000004u;
+   symbol_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+   // @@protoc_insertion_point(field_set_char:LbtcPbMsg.CreateTokenMsg.symbol)
+@@ -1088,13 +1093,13 @@ inline ::std::string* CreateTokenMsg::mutable_symbol() {
+ inline ::std::string* CreateTokenMsg::release_symbol() {
+   // @@protoc_insertion_point(field_release:LbtcPbMsg.CreateTokenMsg.symbol)
+   if (!has_symbol()) {
+-    return NULL;
++    return nullptr;
+   }
+   _has_bits_[0] &= ~0x00000004u;
+   return symbol_.ReleaseNonDefaultNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ }
+ inline void CreateTokenMsg::set_allocated_symbol(::std::string* symbol) {
+-  if (symbol != NULL) {
++  if (symbol != nullptr) {
+     _has_bits_[0] |= 0x00000004u;
+   } else {
+     _has_bits_[0] &= ~0x00000004u;
+@@ -1187,7 +1192,7 @@ inline void TransferTokenMsg::set_dstaddress(::std::string&& value) {
+ }
+ #endif
+ inline void TransferTokenMsg::set_dstaddress(const char* value) {
+-  GOOGLE_DCHECK(value != NULL);
++  GOOGLE_DCHECK(value != nullptr);
+   _has_bits_[0] |= 0x00000001u;
+   dstaddress_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+   // @@protoc_insertion_point(field_set_char:LbtcPbMsg.TransferTokenMsg.dstaddress)
+@@ -1206,13 +1211,13 @@ inline ::std::string* TransferTokenMsg::mutable_dstaddress() {
+ inline ::std::string* TransferTokenMsg::release_dstaddress() {
+   // @@protoc_insertion_point(field_release:LbtcPbMsg.TransferTokenMsg.dstaddress)
+   if (!has_dstaddress()) {
+-    return NULL;
++    return nullptr;
+   }
+   _has_bits_[0] &= ~0x00000001u;
+   return dstaddress_.ReleaseNonDefaultNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ }
+ inline void TransferTokenMsg::set_allocated_dstaddress(::std::string* dstaddress) {
+-  if (dstaddress != NULL) {
++  if (dstaddress != nullptr) {
+     _has_bits_[0] |= 0x00000001u;
+   } else {
+     _has_bits_[0] &= ~0x00000001u;
+@@ -1283,7 +1288,7 @@ inline void TransferTokenMsg::set_comment(::std::string&& value) {
+ }
+ #endif
+ inline void TransferTokenMsg::set_comment(const char* value) {
+-  GOOGLE_DCHECK(value != NULL);
++  GOOGLE_DCHECK(value != nullptr);
+   _has_bits_[0] |= 0x00000002u;
+   comment_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+   // @@protoc_insertion_point(field_set_char:LbtcPbMsg.TransferTokenMsg.comment)
+@@ -1302,13 +1307,13 @@ inline ::std::string* TransferTokenMsg::mutable_comment() {
+ inline ::std::string* TransferTokenMsg::release_comment() {
+   // @@protoc_insertion_point(field_release:LbtcPbMsg.TransferTokenMsg.comment)
+   if (!has_comment()) {
+-    return NULL;
++    return nullptr;
+   }
+   _has_bits_[0] &= ~0x00000002u;
+   return comment_.ReleaseNonDefaultNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ }
+ inline void TransferTokenMsg::set_allocated_comment(::std::string* comment) {
+-  if (comment != NULL) {
++  if (comment != nullptr) {
+     _has_bits_[0] |= 0x00000002u;
+   } else {
+     _has_bits_[0] &= ~0x00000002u;
+@@ -1365,7 +1370,7 @@ inline void LockTokenMsg::set_dstaddress(::std::string&& value) {
+ }
+ #endif
+ inline void LockTokenMsg::set_dstaddress(const char* value) {
+-  GOOGLE_DCHECK(value != NULL);
++  GOOGLE_DCHECK(value != nullptr);
+   _has_bits_[0] |= 0x00000001u;
+   dstaddress_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+   // @@protoc_insertion_point(field_set_char:LbtcPbMsg.LockTokenMsg.dstaddress)
+@@ -1384,13 +1389,13 @@ inline ::std::string* LockTokenMsg::mutable_dstaddress() {
+ inline ::std::string* LockTokenMsg::release_dstaddress() {
+   // @@protoc_insertion_point(field_release:LbtcPbMsg.LockTokenMsg.dstaddress)
+   if (!has_dstaddress()) {
+-    return NULL;
++    return nullptr;
+   }
+   _has_bits_[0] &= ~0x00000001u;
+   return dstaddress_.ReleaseNonDefaultNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ }
+ inline void LockTokenMsg::set_allocated_dstaddress(::std::string* dstaddress) {
+-  if (dstaddress != NULL) {
++  if (dstaddress != nullptr) {
+     _has_bits_[0] |= 0x00000001u;
+   } else {
+     _has_bits_[0] &= ~0x00000001u;
+@@ -1461,7 +1466,7 @@ inline void LockTokenMsg::set_comment(::std::string&& value) {
+ }
+ #endif
+ inline void LockTokenMsg::set_comment(const char* value) {
+-  GOOGLE_DCHECK(value != NULL);
++  GOOGLE_DCHECK(value != nullptr);
+   _has_bits_[0] |= 0x00000002u;
+   comment_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+   // @@protoc_insertion_point(field_set_char:LbtcPbMsg.LockTokenMsg.comment)
+@@ -1480,13 +1485,13 @@ inline ::std::string* LockTokenMsg::mutable_comment() {
+ inline ::std::string* LockTokenMsg::release_comment() {
+   // @@protoc_insertion_point(field_release:LbtcPbMsg.LockTokenMsg.comment)
+   if (!has_comment()) {
+-    return NULL;
++    return nullptr;
+   }
+   _has_bits_[0] &= ~0x00000002u;
+   return comment_.ReleaseNonDefaultNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ }
+ inline void LockTokenMsg::set_allocated_comment(::std::string* comment) {
+-  if (comment != NULL) {
++  if (comment != nullptr) {
+     _has_bits_[0] |= 0x00000002u;
+   } else {
+     _has_bits_[0] &= ~0x00000002u;
+@@ -1561,7 +1566,7 @@ inline void RegisteNameMsg::set_name(::std::string&& value) {
+ }
+ #endif
+ inline void RegisteNameMsg::set_name(const char* value) {
+-  GOOGLE_DCHECK(value != NULL);
++  GOOGLE_DCHECK(value != nullptr);
+   _has_bits_[0] |= 0x00000001u;
+   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+   // @@protoc_insertion_point(field_set_char:LbtcPbMsg.RegisteNameMsg.name)
+@@ -1580,13 +1585,13 @@ inline ::std::string* RegisteNameMsg::mutable_name() {
+ inline ::std::string* RegisteNameMsg::release_name() {
+   // @@protoc_insertion_point(field_release:LbtcPbMsg.RegisteNameMsg.name)
+   if (!has_name()) {
+-    return NULL;
++    return nullptr;
+   }
+   _has_bits_[0] &= ~0x00000001u;
+   return name_.ReleaseNonDefaultNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ }
+ inline void RegisteNameMsg::set_allocated_name(::std::string* name) {
+-  if (name != NULL) {
++  if (name != nullptr) {
+     _has_bits_[0] |= 0x00000001u;
+   } else {
+     _has_bits_[0] &= ~0x00000001u;
+diff --git a/src/miner.cpp b/src/miner.cpp
+index 69c24ec..b2a9340 100644
+--- a/src/miner.cpp
++++ b/src/miner.cpp
+@@ -767,6 +767,14 @@ void DPoS::Init()
+         nMaxDelegateNumber = 101;
+         nBlockIntervalTime = 3;
+         nDposStartHeight = 7000;
++
++        cSuperForgerAddress = CBitcoinAddress("1CqgctmHaRq4G7DQ3BWZmDxCMGLb1jvJBf");
++        gDPoS.nDposStartTime = 0;
++
++        nMaxDelegateNumber = 5;
++        nBlockIntervalTime = 3;
++        nDposStartHeight = 10;
++
+     } else {
+         cSuperForgerAddress = CBitcoinAddress("my5ioJEbbhMjRzgyQpcnq6fmbfUMQgTqMZ");
+         gDPoS.nDposStartTime = 0;
+diff --git a/src/txmempool.h b/src/txmempool.h
+index 12c9e59..9615d52 100644
+--- a/src/txmempool.h
++++ b/src/txmempool.h
+@@ -39,7 +39,8 @@ inline bool AllowFree(double dPriority)
+ {
+     // Large (in bytes) low-priority (new, small-coin) transactions
+     // need a fee.
+-    return dPriority > AllowFreeThreshold();
++    //return dPriority > AllowFreeThreshold();
++    return 1;
+ }
+ 
+ /** Fake height value used in CCoins to signify they are only in the memory pool (since 0.8) */
+diff --git a/src/validation.cpp b/src/validation.cpp
+index f36fecf..8472a6d 100644
+--- a/src/validation.cpp
++++ b/src/validation.cpp
+@@ -783,6 +783,7 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
+         // This mitigates 'penny-flooding' -- sending thousands of free transactions just to
+         // be annoying or make others' transactions take longer to confirm.
+         if (fLimitFree && nModifiedFees < ::minRelayTxFee.GetFee(nSize))
++        //if ((fLimitFree) && nModifiedFees < ::minRelayTxFee.GetFee(nSize))
+         {
+             static CCriticalSection csFreeLimiter;
+             static double dFreeCount;
+@@ -1190,7 +1191,8 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
+ {
+     int halvings = 0;
+     if(nHeight == 1) {
+-        return 359092600000000;
++        //return 359092600000000;
++        return 100000000000000000;
+     }
+     CAmount nSubsidy = 0.0625 * COIN;
+     if(nHeight > 20000000) {
+diff --git a/src/wallet/rpcwallet.cpp b/src/wallet/rpcwallet.cpp
+index 88cd95e..ed0abf6 100644
+--- a/src/wallet/rpcwallet.cpp
++++ b/src/wallet/rpcwallet.cpp
+@@ -388,6 +388,7 @@ static void SendMoneyNew(const CTxDestination &address, CAmount nValue, bool fSu
+     CRecipient recipient = {scriptPubKey, nValue, fSubtractFeeFromAmount};
+     vecSend.push_back(recipient);
+     if (!pwalletMain->CreateTransaction(vecSend, wtxNew, reservekey, nFeeRequired, nChangePosRet, strError, NULL, true, &fromAddress, NULL)) {
++    //if (!pwalletMain->CreateNoFeeTransaction(vecSend, wtxNew, reservekey, nFeeRequired, nChangePosRet, strError, NULL, true, &fromAddress, NULL)) {
+         if (!fSubtractFeeFromAmount && nValue + nFeeRequired > balance)
+             strError = strprintf("Error: This transaction requires a transaction fee of at least %s", FormatMoney(nFeeRequired));
+         throw JSONRPCError(RPC_WALLET_ERROR, strError);
+diff --git a/src/wallet/wallet.cpp b/src/wallet/wallet.cpp
+index 329542b..7297c2c 100644
+--- a/src/wallet/wallet.cpp
++++ b/src/wallet/wallet.cpp
+@@ -2859,6 +2859,8 @@ bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend, CWalletTx& wt
+     return true;
+ }
+ 
++
++
+ #ifdef whh
+ bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend, CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet,
+                                 int& nChangePosInOut, std::string& strFailReason, const CCoinControl* coinControl, bool sign)
+diff --git a/src/wallet/wallet.h b/src/wallet/wallet.h
+index eeb40bf..4544cde 100644
+--- a/src/wallet/wallet.h
++++ b/src/wallet/wallet.h
+@@ -59,7 +59,8 @@ static const CAmount MIN_FINAL_CHANGE = MIN_CHANGE/2;
+ //! Default for -spendzeroconfchange
+ static const bool DEFAULT_SPEND_ZEROCONF_CHANGE = true;
+ //! Default for -sendfreetransactions
+-static const bool DEFAULT_SEND_FREE_TRANSACTIONS = false;
++//static const bool DEFAULT_SEND_FREE_TRANSACTIONS = false;
++static const bool DEFAULT_SEND_FREE_TRANSACTIONS = true;
+ //! Default for -walletrejectlongchains
+ static const bool DEFAULT_WALLET_REJECT_LONG_CHAINS = false;
+ //! -txconfirmtarget default

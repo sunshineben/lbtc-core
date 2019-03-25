@@ -2859,6 +2859,8 @@ bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend, CWalletTx& wt
     return true;
 }
 
+
+
 #ifdef whh
 bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend, CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet,
                                 int& nChangePosInOut, std::string& strFailReason, const CCoinControl* coinControl, bool sign)
